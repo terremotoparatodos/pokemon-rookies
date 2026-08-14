@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon Rookies · Mi panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg: #0a0e15; --gc-bg-top:#2a2013; --gc-bg-bottom:#0c0906;
+    --gc-panel:#1b140c; --gc-panel-border:#40311a;
+    --gold:#e0b559; --gold-bright:#f6d98a; --gold-dim:#8a6a2e;
+    --cream:#f4ead2; --label:#a3906f; --orange:#f0932b;
+    --red:#e8484d; --green:#35d488;
+    --pixel:'Press Start 2P', monospace; --body:'Rubik', system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(224,181,89,0.08), transparent 60%),
+      var(--bg);
+    color: var(--cream); font-family: var(--body); line-height:1.5;
+  }
+  .wrap{ max-width: 640px; margin:0 auto; padding: 30px 18px 70px; }
+
+  .top-title{
+    text-align:center; margin-bottom: 26px;
+  }
+  .top-title .eyebrow{ font-family: var(--pixel); font-size:9px; color:var(--gold); letter-spacing:2px; margin-bottom:10px; }
+  .top-title h1{ font-family: var(--pixel); font-size: clamp(18px,5vw,26px); margin:0; text-shadow: 2px 2px 0 var(--gold-dim); }
+  .top-title a{ color: var(--label); font-size:12px; }
+
+  .panel-card{
+    background: linear-gradient(180deg, var(--gc-bg-top), var(--gc-bg-bottom) 70%);
+    border: 2px solid var(--gold-dim);
+    border-radius: 18px;
+    padding: 24px 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 30px -14px rgba(0,0,0,.7);
+  }
+  .panel-card h2{
+    font-size: 14px; text-transform:uppercase; letter-spacing:.5px;
+    color: var(--gold-bright); margin: 0 0 16px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .field{ margin-bottom: 14px; }
+  .field label{ display:block; font-size:11px; color:var(--label); text-transform:uppercase; font-weight:700; margin-bottom:6px; letter-spacing:.3px; }
+  .field input, .field select{
+    width:100%; background: var(--gc-panel); border:1px solid var(--gc-panel-border);
+    color: var(--cream); padding:11px 12px; border-radius:9px; font-size:14px; font-family: var(--body);
+  }
+  .field input:focus, .field select:focus{ outline:none; border-color: var(--gold); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  .btn{
+    font-family: var(--body); font-weight:800; font-size:13px; text-transform:uppercase;
+    letter-spacing:.4px; padding:11px 20px; border-radius:999px; border:none; cursor:pointer;
+    transition: transform .1s ease;
+  }
+  .btn:active{ transform: scale(.97); }
+  .btn-primary{ background: linear-gradient(180deg, #f0932b, #d9691c); color:#1a0f04; }
+  .btn-ghost{ background: var(--gc-panel); border:1px solid var(--gc-panel-border); color:var(--cream); }
+  .btn-danger{ background: transparent; border:1px solid #5a2a2a; color:#e08a8a; padding:7px 12px; font-size:11px; }
+  .btn-sm{ padding:8px 14px; font-size:11px; }
+  .btn[disabled]{ opacity:.5; cursor:default; }
+
+  .msg{ font-size:12.5px; padding:10px 12px; border-radius:9px; margin-bottom:14px; }
+  .msg.ok{ background: rgba(53,212,136,.12); color:#7fe0b5; border:1px solid rgba(53,212,136,.3); }
+  .msg.err{ background: rgba(232,72,77,.12); color:#f0a0a0; border:1px solid rgba(232,72,77,.3); }
+  .hidden{ display:none !important; }
+
+  /* Login */
+  #login-card{ max-width: 380px; margin: 40px auto 0; }
+  #login-card p.hint{ font-size:11.5px; color:var(--label); margin-top:-6px; margin-bottom:16px; }
+
+  /* Medallas */
+  .badge-picker{ display:flex; gap:7px; flex-wrap:nowrap; justify-content:space-between; }
+  .badge-picker button{
+    background:none; border:none; padding:0; cursor:pointer;
+    width: 40px; height:40px; flex:1 1 0; max-width:44px;
+  }
+  .badge-picker img{ width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,.55)); }
+  .badge-picker img.locked{ filter: grayscale(1) brightness(.4) drop-shadow(0 2px 3px rgba(0,0,0,.5)); opacity:.55; }
+  .badge-picker img.unlocked{ filter: drop-shadow(0 0 6px rgba(224,181,89,.65)) drop-shadow(0 3px 4px rgba(0,0,0,.55)); }
+  .medal-status{ text-align:center; font-size:12px; color: var(--label); margin-top:12px; }
+  .medal-status b{ color: var(--gold-bright); }
+
+  /* Cementerio */
+  .death-row{
+    display:flex; align-items:center; gap:10px; background: var(--gc-panel);
+    border:1px solid var(--gc-panel-border); border-radius: 10px; padding:9px 12px; margin-bottom:8px;
+  }
+  .death-row .pname{ flex:1; font-weight:600; font-size:13.5px; }
+  .death-row a{ font-size:11.5px; color:#7fb8e0; }
+  .add-death{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .add-death input{ flex:1; min-width:120px; }
+
+  /* Equipo */
+  .team-row{
+    display:grid; grid-template-columns: 2fr 1fr auto; gap:8px; align-items:center; margin-bottom:8px;
+  }
+  .team-row .slot-num{ font-family: var(--pixel); font-size:10px; color: var(--gold-dim); }
+  .fainted-check{ display:flex; align-items:center; gap:6px; font-size:11px; color: var(--label); white-space:nowrap; }
+
+  .section-foot{ display:flex; justify-content:flex-end; gap:10px; margin-top:12px; }
+  .empty-note{ font-size:12px; color: var(--label); font-style:italic; }
+
+  .logout-bar{ text-align:center; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top-title">
+    <div class="eyebrow">Pokémon Rookies</div>
+    <h1>MI PANEL</h1>
+    <a href="index.html">← volver al seguimiento general</a>
+  </div>
+
+  <!-- ============ LOGIN ============ -->
+  <div id="login-card" class="panel-card">
+    <h2>Iniciar sesión</h2>
+    <p class="hint">Usá el email y la contraseña que te pasó Guti.</p>
+    <div id="login-msg"></div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="login-email" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" id="login-btn" style="width:100%">Entrar</button>
+  </div>
+
+  <!-- ============ DASHBOARD (oculto hasta loguearse) ============ -->
+  <div id="dashboard" class="hidden">
+
+    <div class="panel-card">
+      <h2 id="welcome-title">Hola 👋</h2>
+      <div id="dash-msg"></div>
+
+      <div class="field">
+        <label>Link de Twitch</label>
+        <input type="text" id="f-twitch" placeholder="https://twitch.tv/tu_usuario">
+      </div>
+      <div class="field">
+        <label>Link de YouTube</label>
+        <input type="text" id="f-youtube" placeholder="https://youtube.com/@tucanal">
+      </div>
+      <div class="field">
+        <label>Foto de perfil (URL)</label>
+        <input type="text" id="f-avatar" placeholder="https://...">
+      </div>
+      <button class="btn btn-primary" id="save-profile-btn">Guardar perfil</button>
+    </div>
+
+    <div class="panel-card">
+      <h2>🏅 Medallas</h2>
+      <p class="hint" style="margin-bottom:14px;">Tocá la última medalla que conseguiste — se completa todo hasta ahí.</p>
+      <div class="badge-picker" id="badge-picker"></div>
+      <div class="medal-status" id="medal-status"></div>
+    </div>
+
+    <div class="panel-card">
+      <h2>💀 Cementerio</h2>
+      <div id="deaths-list"></div>
+      <div id="deaths-empty" class="empty-note hidden">Todavía no cargaste ninguna baja.</div>
+      <div class="add-death">
+        <input type="text" id="new-death-name" placeholder="Nombre del Pokémon">
+        <input type="text" id="new-death-clip" placeholder="Link al clip de Twitch">
+        <button class="btn btn-primary btn-sm" id="add-death-btn">Agregar</button>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h2>⚔️ Equipo activo</h2>
+      <p class="hint" style="margin-bottom:14px;">
+        Por ahora se carga a mano. El número de Pokédex es opcional — si lo ponés, el sprite se arma solo.
+      </p>
+      <div id="team-rows"></div>
+      <div class="section-foot">
+        <button class="btn btn-primary btn-sm" id="save-team-btn">Guardar equipo</button>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h2>🔒 Seguridad</h2>
+      <div class="row2">
+        <div class="field">
+          <label>Nueva contraseña</label>
+          <input type="password" id="new-pass1">
+        </div>
+        <div class="field">
+          <label>Repetir contraseña</label>
+          <input type="password" id="new-pass2">
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="change-pass-btn">Cambiar contraseña</button>
+    </div>
+
+    <div class="logout-bar">
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Cerrar sesión</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIG SUPABASE — completar con el proyecto real
+   ========================================================= */
+const SUPABASE_URL = 'https://gaccsgiobsjguauourvx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhY2NzZ2lvYnNqZ3VhdW91cnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NzQyMTMsImV4cCI6MjA5NzE1MDIxM30.1DQL_n9Ek3tNfrRXIKsb3a9OPYl9LwKpLBMYVcJu1iQ';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const BADGE_ORDER = [
+  { name: 'Piedra',     dexHint: 1 },
+  { name: 'Puño',       dexHint: 2 },
+  { name: 'Dinamo',     dexHint: 3 },
+  { name: 'Calor',      dexHint: 4 },
+  { name: 'Equilibrio', dexHint: 5 },
+  { name: 'Pluma',      dexHint: 6 },
+  { name: 'Mente',      dexHint: 7 },
+  { name: 'Lluvia',     dexHint: 8 },
+];
+/* Nota: las imágenes reales de las 8 medallas viven en index.html (embebidas en base64).
+   Para no duplicar ~220KB en este archivo, acá se muestran como placeholders con el
+   nombre — si querés los ícones reales en el panel también, decímelo y los copio. */
+
+let currentStreamer = null;
+
+function showMsg(el, text, ok){
+  el.innerHTML = `<div class="msg ${ok?'ok':'err'}">${text}</div>`;
+  setTimeout(() => { el.innerHTML = ''; }, 4000);
+}
+
+/* =========================================================
+   Auth
+   ========================================================= */
+async function init(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){
+    await loadDashboard(session.user.id);
+  } else {
+    document.getElementById('login-card').classList.remove('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+  }
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-pass').value;
+  const msgEl = document.getElementById('login-msg');
+  if(!email || !password){ showMsg(msgEl, 'Completá email y contraseña.', false); return; }
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){ showMsg(msgEl, 'No pudimos iniciar sesión: ' + error.message, false); return; }
+  await loadDashboard(data.user.id);
+});
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  location.reload();
+});
+
+document.getElementById('change-pass-btn').addEventListener('click', async () => {
+  const p1 = document.getElementById('new-pass1').value;
+  const p2 = document.getElementById('new-pass2').value;
+  const msgEl = document.getElementById('dash-msg');
+  if(p1.length < 6){ showMsg(msgEl, 'La contraseña tiene que tener al menos 6 caracteres.', false); return; }
+  if(p1 !== p2){ showMsg(msgEl, 'Las contraseñas no coinciden.', false); return; }
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  if(error){ showMsg(msgEl, 'Error: ' + error.message, false); return; }
+  document.getElementById('new-pass1').value = '';
+  document.getElementById('new-pass2').value = '';
+  showMsg(msgEl, 'Contraseña actualizada ✅', true);
+});
+
+/* =========================================================
+   Dashboard
+   ========================================================= */
+async function loadDashboard(userId){
+  const msgEl = document.getElementById('dash-msg');
+  const { data: streamer, error } = await sb.from('rookies_streamers').select('*').eq('user_id', userId).single();
+
+  if(error || !streamer){
+    document.getElementById('login-card').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('welcome-title').textContent = '⚠️ Tu cuenta no está vinculada';
+    showMsg(msgEl, 'Iniciaste sesión bien, pero tu usuario todavía no está linkeado a ningún streamer. Avisale a Guti.', false);
+    return;
+  }
+
+  currentStreamer = streamer;
+
+  document.getElementById('login-card').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('welcome-title').textContent = `Hola, ${streamer.name} 👋`;
+
+  document.getElementById('f-twitch').value = streamer.twitch_url || '';
+  document.getElementById('f-youtube').value = streamer.youtube_url || '';
+  document.getElementById('f-avatar').value = streamer.avatar_url || '';
+
+  renderBadgePicker(streamer.medallas || 0);
+  await loadDeaths();
+  await loadTeam();
+}
+
+document.getElementById('save-profile-btn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('dash-msg');
+  const payload = {
+    twitch_url: document.getElementById('f-twitch').value.trim() || null,
+    youtube_url: document.getElementById('f-youtube').value.trim() || null,
+    avatar_url: document.getElementById('f-avatar').value.trim() || null,
+  };
+  const { error } = await sb.from('rookies_streamers').update(payload).eq('id', currentStreamer.id);
+  if(error){ showMsg(msgEl, 'Error al guardar: ' + error.message, false); return; }
+  Object.assign(currentStreamer, payload);
+  showMsg(msgEl, 'Perfil guardado ✅', true);
+});
+
+/* ---- Medallas ---- */
+function renderBadgePicker(current){
+  const el = document.getElementById('badge-picker');
+  el.innerHTML = BADGE_ORDER.map((b, i) => `
+    <button data-i="${i+1}" title="Medalla ${b.name}">
+      <img class="${i < current ? 'unlocked':'locked'}"
+           src="data:image/svg+xml;utf8,${encodeURIComponent(placeholderBadgeSvg(b.name, i < current))}"
+           alt="${b.name}">
+    </button>
+  `).join('');
+  updateMedalStatus(current);
+
+  el.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const n = parseInt(btn.dataset.i, 10);
+      const msgEl = document.getElementById('dash-msg');
+      const { error } = await sb.from('rookies_streamers').update({ medallas: n, bosses: n }).eq('id', currentStreamer.id);
+      if(error){ showMsg(msgEl, 'Error: ' + error.message, false); return; }
+      currentStreamer.medallas = n;
+      renderBadgePicker(n);
+      showMsg(msgEl, `Medallas actualizadas: ${n}/8 ✅`, true);
+    });
+  });
+}
+function updateMedalStatus(n){
+  document.getElementById('medal-status').innerHTML = `Progreso actual: <b>${n}/8</b> medallas`;
+}
+function placeholderBadgeSvg(name, on){
+  const color = on ? '#e0b559' : '#3a3020';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="${color}"/><text x="20" y="24" font-size="8" text-anchor="middle" fill="#0c0906" font-family="sans-serif">${name.slice(0,4)}</text></svg>`;
+}
+
+/* ---- Cementerio ---- */
+async function loadDeaths(){
+  const { data } = await sb.from('rookies_deaths').select('*').eq('streamer_id', currentStreamer.id).order('created_at', {ascending:false});
+  const listEl = document.getElementById('deaths-list');
+  const emptyEl = document.getElementById('deaths-empty');
+  const rows = data || [];
+  emptyEl.classList.toggle('hidden', rows.length > 0);
+  listEl.innerHTML = rows.map(d => `
+    <div class="death-row">
+      <span class="pname">${d.pokemon_name}</span>
+      ${d.clip_url ? `<a href="${d.clip_url}" target="_blank" rel="noopener">ver clip</a>` : ''}
+      <button class="btn btn-danger" data-id="${d.id}">Borrar</button>
+    </div>
+  `).join('');
+
+  listEl.querySelectorAll('button[data-id]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      await sb.from('rookies_deaths').delete().eq('id', btn.dataset.id);
+      loadDeaths();
+    });
+  });
+}
+
+document.getElementById('add-death-btn').addEventListener('click', async () => {
+  const nameEl = document.getElementById('new-death-name');
+  const clipEl = document.getElementById('new-death-clip');
+  const msgEl = document.getElementById('dash-msg');
+  const pokemon_name = nameEl.value.trim();
+  const clip_url = clipEl.value.trim() || null;
+  if(!pokemon_name){ showMsg(msgEl, 'Falta el nombre del Pokémon.', false); return; }
+
+  const { error } = await sb.from('rookies_deaths').insert({ streamer_id: currentStreamer.id, pokemon_name, clip_url });
+  if(error){ showMsg(msgEl, 'Error: ' + error.message, false); return; }
+  nameEl.value = ''; clipEl.value = '';
+  showMsg(msgEl, 'Baja agregada al cementerio 💀', true);
+  loadDeaths();
+});
+
+/* ---- Equipo activo ---- */
+async function loadTeam(){
+  const { data } = await sb.from('rookies_team_slots').select('*').eq('streamer_id', currentStreamer.id).order('slot');
+  const bySlot = {};
+  (data || []).forEach(t => bySlot[t.slot] = t);
+
+  const el = document.getElementById('team-rows');
+  el.innerHTML = Array.from({length:6}).map((_, i) => {
+    const slot = i + 1;
+    const t = bySlot[slot] || {};
+    return `
+    <div class="team-row">
+      <input type="text" data-slot="${slot}" data-field="pokemon_name" placeholder="Nombre" value="${t.pokemon_name || ''}">
+      <input type="number" data-slot="${slot}" data-field="dex_id" placeholder="N° Pokédex" value="${t.dex_id || ''}">
+      <label class="fainted-check">
+        <input type="checkbox" data-slot="${slot}" data-field="fainted" ${t.fainted ? 'checked':''}> Debilitado
+      </label>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('save-team-btn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('dash-msg');
+  const rows = {};
+  document.querySelectorAll('#team-rows [data-slot]').forEach(input => {
+    const slot = parseInt(input.dataset.slot, 10);
+    rows[slot] = rows[slot] || { slot };
+    if(input.dataset.field === 'fainted') rows[slot].fainted = input.checked;
+    else if(input.dataset.field === 'dex_id') rows[slot].dex_id = input.value ? parseInt(input.value, 10) : null;
+    else rows[slot].pokemon_name = input.value.trim() || null;
+  });
+
+  const payload = Object.values(rows).map(r => ({
+    streamer_id: currentStreamer.id,
+    slot: r.slot,
+    pokemon_name: r.pokemon_name || null,
+    dex_id: r.dex_id || null,
+    sprite_url: r.dex_id ? `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${String(r.dex_id).padStart(4,'0')}/Normal.png` : null,
+    fainted: !!r.fainted
+  }));
+
+  const { error } = await sb.from('rookies_team_slots').upsert(payload, { onConflict: 'streamer_id,slot' });
+  if(error){ showMsg(msgEl, 'Error al guardar equipo: ' + error.message, false); return; }
+  showMsg(msgEl, 'Equipo guardado ✅', true);
+});
+
+init();
+</script>
+</body>
+</html>
