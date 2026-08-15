@@ -187,6 +187,7 @@
     font-size: 20px;
     background: var(--gc-panel);
   }
+  .avatar.placeholder svg{ width: 24px; height: 24px; fill: var(--gold-dim); }
   .name-block{ min-width:0; padding-top: 1px; }
   .card-head .name{
     font-weight: 800;
@@ -744,10 +745,20 @@ function render(){
   renderStats();
 }
 
+/* "En vivo" no es un booleano que alguien prenda/apague a mano -- se calcula
+   solo: si el .exe mandó señal hace menos de 90'' (3 ciclos de sync de 30''),
+   consideramos que está streameando. Si deja de mandar señal (cerró el
+   programa, se colgó, apagó la PC), se apaga solo sin que nadie toque nada. */
+const LIVE_THRESHOLD_MS = 90 * 1000;
+function isLive(s){
+  if(!s.ultima_senal) return false;
+  return (Date.now() - new Date(s.ultima_senal).getTime()) < LIVE_THRESHOLD_MS;
+}
+
 function renderStats(){
   const list = Object.values(streamers);
   document.getElementById('stat-total').textContent = list.length;
-  document.getElementById('stat-live').textContent = list.filter(s => s.en_directo).length;
+  document.getElementById('stat-live').textContent = list.filter(isLive).length;
   document.getElementById('stat-alive').textContent = list.filter(s => s.vidas > 0).length;
 }
 
@@ -874,7 +885,7 @@ function renderGrid(){
   } else if(currentFilter === 'horas'){
     ordered = [...list].sort((a,b) => (b.horas||0) - (a.horas||0));
   } else if(currentFilter === 'directo'){
-    ordered = list.filter(s => s.en_directo).sort((a,b) => (b.vidas||0) - (a.vidas||0));
+    ordered = list.filter(isLive).sort((a,b) => (b.vidas||0) - (a.vidas||0));
   } else {
     ordered = [...list].sort((a,b) => rankOf[a.id] - rankOf[b.id]);
   }
@@ -925,16 +936,20 @@ function cardHTML(s, rank){
   const isPodium = rank <= 3;
   const vidasPct = Math.max(0, Math.min(100, (s.vidas / MAX_VIDAS) * 100));
 
+  // Plataforma de stream única: preferimos Twitch, si no hay usamos YouTube.
+  const platformUrl = s.twitch_url || s.youtube_url || null;
+  const isTwitch = !!s.twitch_url;
+
   const avatar = s.avatar_url
     ? `<img class="avatar" src="${s.avatar_url}" alt="${s.name}">`
-    : `<div class="avatar placeholder">🎮</div>`;
+    : `<div class="avatar placeholder">${platformUrl ? (isTwitch ? ICONS.twitch : ICONS.youtube) : '🎮'}</div>`;
 
-  const nameLink = s.twitch_url
-    ? `<a class="name" href="${s.twitch_url}" target="_blank" rel="noopener"><span class="dot"></span>${s.name}</a>`
+  const nameLink = platformUrl
+    ? `<a class="name" href="${platformUrl}" target="_blank" rel="noopener"><span class="dot"></span>${s.name}</a>`
     : `<div class="name"><span class="dot"></span>${s.name}</div>`;
 
   return `
-  <div class="card ${s.en_directo ? 'live':'offline'} ${s.vidas<=0 ? 'out':''} ${isPodium ? 'podium':''}">
+  <div class="card ${isLive(s) ? 'live':'offline'} ${s.vidas<=0 ? 'out':''} ${isPodium ? 'podium':''}">
     ${isPodium ? `<div class="crown">${ICONS.crown}</div>` : ''}
     <div class="card-rank">#${rank}</div>
 
@@ -942,8 +957,7 @@ function cardHTML(s, rank){
       ${avatar}
       <div class="name-block">
         ${nameLink}
-        ${s.twitch_url ? `<span class="twitch-tag">${ICONS.twitch}${s.twitch_url.split('/').pop()}</span>` : ''}
-        ${s.youtube_url ? `<a class="twitch-tag youtube-tag" href="${s.youtube_url}" target="_blank" rel="noopener">${ICONS.youtube}YouTube</a>` : ''}
+        ${platformUrl ? `<a class="twitch-tag" href="${platformUrl}" target="_blank" rel="noopener">${isTwitch ? ICONS.twitch : ICONS.youtube}${isTwitch ? platformUrl.split('/').pop() : 'YouTube'}</a>` : ''}
         ${status.key === 'campeon' ? `<span class="status-line">${ICONS.crown}Campeón del Locke</span>` : ''}
       </div>
     </div>
@@ -1006,6 +1020,10 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 loadData();
+
+// Reevalúa quién sigue "en vivo" cada 20'' aunque no llegue ningún dato nuevo
+// (así se apaga solo si alguien cierra el .exe sin avisar).
+setInterval(() => { renderGrid(); renderStats(); }, 20000);
 </script>
 
 </body>
