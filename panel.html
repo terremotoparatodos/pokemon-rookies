@@ -155,6 +155,10 @@
         <label>Foto de perfil (URL)</label>
         <input type="text" id="f-avatar" placeholder="https://...">
       </div>
+      <div class="field">
+        <label>¿Dónde estás ahora? (ciudad/ruta)</label>
+        <input type="text" id="f-ubicacion" placeholder="Ej: Ruta 110, Pueblo Verdegal, Cueva Granito...">
+      </div>
       <button class="btn btn-primary" id="save-profile-btn">Guardar perfil</button>
     </div>
 
@@ -171,9 +175,14 @@
       <div id="deaths-empty" class="empty-note hidden">Todavía no cargaste ninguna baja.</div>
       <div class="add-death">
         <input type="text" id="new-death-name" placeholder="Nombre del Pokémon">
+        <input type="number" id="new-death-dexid" placeholder="N° Pokédex" style="max-width:110px;">
         <input type="text" id="new-death-clip" placeholder="Link al clip de Twitch">
         <button class="btn btn-primary btn-sm" id="add-death-btn">Agregar</button>
       </div>
+      <p class="hint" style="margin-top:8px;">
+        El N° de Pokédex es para que el sprite salga correcto en el cementerio de la web
+        (si tiene una forma especial, como Rotom, poné el número de esa forma).
+      </p>
     </div>
 
     <div class="panel-card">
@@ -304,6 +313,7 @@ async function loadDashboard(userId){
   document.getElementById('f-twitch').value = streamer.twitch_url || '';
   document.getElementById('f-youtube').value = streamer.youtube_url || '';
   document.getElementById('f-avatar').value = streamer.avatar_url || '';
+  document.getElementById('f-ubicacion').value = streamer.ubicacion || '';
 
   renderBadgePicker(streamer.medallas || 0);
   await loadDeaths();
@@ -316,6 +326,7 @@ document.getElementById('save-profile-btn').addEventListener('click', async () =
     twitch_url: document.getElementById('f-twitch').value.trim() || null,
     youtube_url: document.getElementById('f-youtube').value.trim() || null,
     avatar_url: document.getElementById('f-avatar').value.trim() || null,
+    ubicacion: document.getElementById('f-ubicacion').value.trim() || null,
   };
   const { error } = await sb.from('rookies_streamers').update(payload).eq('id', currentStreamer.id);
   if(error){ showMsg(msgEl, 'Error al guardar: ' + error.message, false); return; }
@@ -380,15 +391,17 @@ async function loadDeaths(){
 
 document.getElementById('add-death-btn').addEventListener('click', async () => {
   const nameEl = document.getElementById('new-death-name');
+  const dexEl = document.getElementById('new-death-dexid');
   const clipEl = document.getElementById('new-death-clip');
   const msgEl = document.getElementById('dash-msg');
   const pokemon_name = nameEl.value.trim();
+  const dex_id = dexEl.value ? parseInt(dexEl.value, 10) : null;
   const clip_url = clipEl.value.trim() || null;
   if(!pokemon_name){ showMsg(msgEl, 'Falta el nombre del Pokémon.', false); return; }
 
-  const { error } = await sb.from('rookies_deaths').insert({ streamer_id: currentStreamer.id, pokemon_name, clip_url });
+  const { error } = await sb.from('rookies_deaths').insert({ streamer_id: currentStreamer.id, pokemon_name, dex_id, clip_url });
   if(error){ showMsg(msgEl, 'Error: ' + error.message, false); return; }
-  nameEl.value = ''; clipEl.value = '';
+  nameEl.value = ''; dexEl.value = ''; clipEl.value = '';
   showMsg(msgEl, 'Baja agregada al cementerio 💀', true);
   loadDeaths();
 });
