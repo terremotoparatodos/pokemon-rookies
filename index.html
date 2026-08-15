@@ -202,17 +202,38 @@
     line-height:1.2;
   }
   .card-head .name:hover{ color: var(--gold-bright); }
+  .platform-row{
+    display:flex;
+    align-items:center;
+    gap: 7px;
+    margin-top: 3px;
+    flex-wrap: wrap;
+  }
   .twitch-tag{
     font-size: 11.5px;
     color: #9a8bb5;
     display:flex;
     align-items:center;
     gap: 4px;
-    margin-top: 3px;
+    margin-top: 0;
   }
   .twitch-tag svg{ width:11px; height:11px; flex:none; fill:#a78bd6; }
   .youtube-tag{ text-decoration:none; color:#c99; cursor:pointer; }
   .youtube-tag:hover{ color:#e04c4c; }
+  .live-badge{
+    font-family: var(--body);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    color: #fff;
+    background: linear-gradient(180deg, #ff4d4d, #cc1f1f);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 4px;
+    padding: 2px 6px;
+    line-height: 1.3;
+    box-shadow: 0 0 6px -1px rgba(255,60,60,.7);
+    flex: none;
+  }
   .status-line{
     font-family: var(--body);
     font-weight: 700;
@@ -255,6 +276,25 @@
     flex: none;
   }
   .status-icon svg{ width: 20px; height:20px; }
+  .status-icon.status-icon-plain{
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+  }
+  .trainer-walk{
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background-repeat: no-repeat;
+    animation-name: trainer-walk-cycle;
+    animation-timing-function: steps(8);
+    animation-iteration-count: infinite;
+    transform: scale(1.0625);
+  }
+  @keyframes trainer-walk-cycle{
+    from{ background-position-x: 0; }
+    to{ background-position-x: -256px; }
+  }
   .status-text .eyebrow2{
     font-size: 10px;
     font-weight: 700;
@@ -523,7 +563,7 @@
 
   <div class="banner">
     <div class="eyebrow">Seguimiento en directo</div>
-    <h1>POKÉMON ROOKIES</h1>
+    <h1>POKEMON ROOKIES</h1>
     <p>11 streamers · 1 Nuzlocke · vidas, medallas y equipos en tiempo real</p>
     <div class="stats">
       <div class="stat"><b id="stat-total">11</b>Streamers</div>
@@ -769,6 +809,7 @@ function renderStats(){
    Empates totales comparten posición (estilo "Doble KO" del sitio original).
    ========================================================= */
 function compareStreamers(a, b){
+  if(!!b.liga_completada !== !!a.liga_completada) return (b.liga_completada?1:0) - (a.liga_completada?1:0);
   if((b.medallas||0)    !== (a.medallas||0))    return (b.medallas||0)    - (a.medallas||0);
   if((b.bosses||0)      !== (a.bosses||0))      return (b.bosses||0)      - (a.bosses||0);
   if((b.alto_mando||0)  !== (a.alto_mando||0))  return (b.alto_mando||0)  - (a.alto_mando||0);
@@ -777,7 +818,8 @@ function compareStreamers(a, b){
 }
 
 function sameStanding(a, b){
-  return (a.medallas||0)   === (b.medallas||0)
+  return !!a.liga_completada === !!b.liga_completada
+      && (a.medallas||0)   === (b.medallas||0)
       && (a.bosses||0)     === (b.bosses||0)
       && (a.alto_mando||0) === (b.alto_mando||0)
       && (a.vidas||0)      === (b.vidas||0)
@@ -858,10 +900,27 @@ const ICONS = {
   elite4: (beaten) => `<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="${beaten ? 'var(--gold)' : '#3a3020'}"/><path d="M4 21c0-4.5 3.6-7 8-7s8 2.5 8 7" fill="${beaten ? 'var(--gold)' : '#3a3020'}"/></svg>`
 };
 
-function statusIconSvg(key){
-  if(key === 'campeon') return ICONS.trophy;
-  if(key === 'eliminado') return ICONS.skull;
-  return ICONS.compass;
+const WALK_SHEETS = {
+  brendan: { src: 'data:image/png;base64,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', w: 258, h: 46 },
+  may:     { src: 'data:image/png;base64,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', w: 256, h: 45 },
+};
+
+/* Serena y Junzen caminan con el sprite de May; el resto, con el de Brendan.
+   Es una animación real de 8 cuadros (no un rebote simulado). */
+const FEMALE_STREAMER_IDS = new Set(['serena', 'junzen']);
+function walkSheetFor(streamerId){
+  return FEMALE_STREAMER_IDS.has((streamerId||'').toLowerCase()) ? WALK_SHEETS.may : WALK_SHEETS.brendan;
+}
+
+function statusIconSvg(key, streamerId){
+  const sheet = walkSheetFor(streamerId);
+  const FRAME_W = 32; // cada cuadro mide exactamente 32px, sin importar el sobrante de la hoja
+  return `<div class="trainer-walk" style="
+    width:${FRAME_W}px; height:${sheet.h}px;
+    background-image:url('${sheet.src}');
+    background-size:${sheet.w}px ${sheet.h}px;
+    animation-duration:0.8s;
+  "></div>`;
 }
 
 let currentFilter = 'ranking';
@@ -928,7 +987,6 @@ function cardHTML(s, rank){
               : `<span class="grave-unknown">?</span>`}
             <span class="x">✕</span>
           </div>
-          <div class="grave-name">${d.pokemon_name}</div>
         </a>`).join('')}</div>`
     : `<div class="cemetery-empty">Sin bajas todavía</div>`;
 
@@ -940,9 +998,19 @@ function cardHTML(s, rank){
   const platformUrl = s.twitch_url || s.youtube_url || null;
   const isTwitch = !!s.twitch_url;
 
+  // Si no cargaron foto de perfil, usamos el avatar actual de su Twitch
+  // (vía DecAPI, un servicio público que resuelve esto sin necesitar claves de API).
+  function twitchAvatarUrl(twitchUrl){
+    const username = (twitchUrl || '').split('/').filter(Boolean).pop();
+    return username ? `https://decapi.me/twitch/avatar/${username}` : null;
+  }
+  const fallbackAvatar = s.avatar_url ? null : (s.twitch_url ? twitchAvatarUrl(s.twitch_url) : null);
+
   const avatar = s.avatar_url
     ? `<img class="avatar" src="${s.avatar_url}" alt="${s.name}">`
-    : `<div class="avatar placeholder">${platformUrl ? (isTwitch ? ICONS.twitch : ICONS.youtube) : '🎮'}</div>`;
+    : fallbackAvatar
+      ? `<img class="avatar" src="${fallbackAvatar}" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;avatar placeholder&quot;>${isTwitch ? '🟣' : '🎮'}</div>';">`
+      : `<div class="avatar placeholder">${platformUrl ? (isTwitch ? ICONS.twitch : ICONS.youtube) : '🎮'}</div>`;
 
   const nameLink = platformUrl
     ? `<a class="name" href="${platformUrl}" target="_blank" rel="noopener"><span class="dot"></span>${s.name}</a>`
@@ -957,13 +1025,15 @@ function cardHTML(s, rank){
       ${avatar}
       <div class="name-block">
         ${nameLink}
-        ${platformUrl ? `<a class="twitch-tag" href="${platformUrl}" target="_blank" rel="noopener">${isTwitch ? ICONS.twitch : ICONS.youtube}${isTwitch ? platformUrl.split('/').pop() : 'YouTube'}</a>` : ''}
-        ${status.key === 'campeon' ? `<span class="status-line">${ICONS.crown}Campeón del Locke</span>` : ''}
+        <div class="platform-row">
+          ${platformUrl ? `<a class="twitch-tag" href="${platformUrl}" target="_blank" rel="noopener">${isTwitch ? ICONS.twitch : ICONS.youtube}${isTwitch ? platformUrl.split('/').pop() : 'YouTube'}</a>` : ''}
+          ${isLive(s) ? `<span class="live-badge">EN VIVO</span>` : ''}
+        </div>
       </div>
     </div>
 
     <div class="status-box st-${status.key}">
-      <div class="status-icon">${statusIconSvg(status.key)}</div>
+      <div class="status-icon status-icon-plain">${statusIconSvg(status.key, s.id)}</div>
       <div class="status-text">
         <div class="eyebrow2">${status.eyebrow}</div>
         <div class="title2">${status.title}</div>
