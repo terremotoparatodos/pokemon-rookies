@@ -801,8 +801,11 @@ function statusOf(s){
   const medallas = s.medallas || 0;
   const ubicacion = s.ubicacion || 'ubicación sin cargar';
 
+  if(s.liga_completada){
+    return { key:'campeon', eyebrow: ubicacion.toUpperCase(), title: '¡CAMPEÓN DE LA LIGA!' };
+  }
   if(medallas >= 8){
-    return { key:'campeon', eyebrow: ubicacion.toUpperCase(), title: 'RUMBO A LA LIGA POKÉMON' };
+    return { key:'ruta', eyebrow: ubicacion.toUpperCase(), title: 'RUMBO A LA LIGA POKÉMON' };
   }
   return {
     key: 'ruta',
