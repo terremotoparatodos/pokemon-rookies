@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambios de Evolución · Pokémon Rookies</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold: #e0b559; --gold-bright: #f6d98a; --gold-dim: #8a6a2e;
+    --gc-bg-top: #241a10; --gc-bg-bottom: #0c0906;
+    --gc-panel: #1b140c; --gc-panel-border: #40311a;
+    --cream: #f4ead2; --label: #a3906f; --orange: #f0932b; --green: #35d488;
+    --pixel: 'Press Start 2P', monospace; --body: 'Rubik', system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh;
+    background: radial-gradient(ellipse 900px 500px at 20% -10%, rgba(224,181,89,0.08), transparent 60%), #0a0e15;
+    color: var(--cream); font-family: var(--body); line-height:1.5;
+    padding: 32px 20px 60px;
+  }
+  .wrap{ max-width: 820px; margin:0 auto; }
+  .eyebrow{ font-family: var(--pixel); font-size:9px; color:var(--gold); letter-spacing:2px; text-align:center; margin-bottom:10px; }
+  h1{ font-family: var(--pixel); font-size: clamp(16px,4vw,24px); text-align:center; margin:0 0 8px; text-shadow: 2px 2px 0 var(--gold-dim); color:#fff; }
+  .subtitle{ text-align:center; color:var(--label); font-size:13px; margin-bottom: 20px; }
+  .intro{
+    background: var(--gc-panel); border:1px solid var(--gc-panel-border); border-radius:12px;
+    padding: 16px 18px; font-size: 13px; color: var(--label); margin-bottom: 28px;
+  }
+  .intro b{ color: var(--cream); }
+  .section{
+    background: linear-gradient(180deg, var(--gc-bg-top), var(--gc-bg-bottom) 70%);
+    border: 2px solid var(--gold-dim);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .section h2{
+    font-size: 13px; text-transform:uppercase; letter-spacing:.5px;
+    color: var(--gold-bright); margin: 0 0 6px;
+  }
+  .section .note{ font-size:11.5px; color:var(--label); margin-bottom:14px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.4px;
+    color: var(--label); padding: 6px 8px; border-bottom: 1px solid var(--gc-panel-border);
+  }
+  td{ padding: 8px; border-bottom: 1px solid rgba(64,49,26,.4); vertical-align:top; }
+  tr:last-child td{ border-bottom:none; }
+  .mon{ font-weight:700; }
+  .arrow{ color: var(--gold-dim); margin: 0 4px; }
+  .method{ color: var(--green); font-size:12.5px; }
+  .diff{ color: var(--orange); font-weight:700; font-family: var(--pixel); font-size:11px; }
+  a.back{ display:block; text-align:center; color:var(--label); font-size:12px; margin-top:20px; text-decoration:none; }
+  a.back:hover{ color: var(--gold-bright); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Pokémon Rookies</div>
+  <h1>CAMBIOS DE EVOLUCIÓN</h1>
+  <p class="subtitle">Rising Ruby / Sinking Sapphire</p>
+
+  <div class="intro">
+    Los Pokémon que en el juego original evolucionaban por intercambio ahora tienen una forma alternativa de
+    evolucionar sin necesitar tradear. Además, varios niveles de evolución fueron reducidos para no quedar
+    tan por detrás del ritmo del juego. <b>Ambos métodos (el nuevo y el intercambio) siguen funcionando.</b>
+  </div>
+
+  <div class="section">
+    <h2>Evolucionan por nivel + amistad</h2>
+    <div class="note">Sube de nivel con 220+ de amistad, o directo al nivel indicado — lo que llegue primero.</div>
+    <table>
+      <tr><th>Pokémon</th><th>Método nuevo</th></tr>
+      <tr><td class="mon">Kadabra <span class="arrow">→</span> Alakazam</td><td class="method">220+ amistad o Nv. 36</td></tr>
+      <tr><td class="mon">Machoke <span class="arrow">→</span> Machamp</td><td class="method">220+ amistad o Nv. 39</td></tr>
+      <tr><td class="mon">Graveler <span class="arrow">→</span> Golem</td><td class="method">220+ amistad o Nv. 36</td></tr>
+      <tr><td class="mon">Haunter <span class="arrow">→</span> Gengar</td><td class="method">220+ amistad o Nv. 36</td></tr>
+      <tr><td class="mon">Boldore <span class="arrow">→</span> Gigalith</td><td class="method">220+ amistad o Nv. 36</td></tr>
+      <tr><td class="mon">Gurdurr <span class="arrow">→</span> Conkeldurr</td><td class="method">220+ amistad o Nv. 36</td></tr>
+      <tr><td class="mon">Phantump <span class="arrow">→</span> Trevenant</td><td class="method">220+ amistad o Nv. 23</td></tr>
+      <tr><td class="mon">Pumpkaboo <span class="arrow">→</span> Gourgeist</td><td class="method">220+ amistad o Nv. 23</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Evolucionan con objeto (usalo como piedra)</h2>
+    <div class="note">Objetos en venta en el Mercado de Portualta y en Grandes Almacenes Ciudad Algaria.</div>
+    <table>
+      <tr><th>Pokémon</th><th>Objeto</th><th>Dónde conseguirlo</th></tr>
+      <tr><td class="mon">Poliwhirl <span class="arrow">→</span> Politoed</td><td class="method">Roca Rey</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Slowpoke <span class="arrow">→</span> Slowking</td><td class="method">Roca Rey</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Onix <span class="arrow">→</span> Steelix</td><td class="method">Metal Recub.</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Rhydon <span class="arrow">→</span> Rhyperior</td><td class="method">Protector</td><td>Grandes Almacenes</td></tr>
+      <tr><td class="mon">Seadra <span class="arrow">→</span> Kingdra</td><td class="method">Escama Dragón</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Scyther <span class="arrow">→</span> Scizor</td><td class="method">Metal Recub.</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Electabuzz <span class="arrow">→</span> Electivire</td><td class="method">Electrizador</td><td>Grandes Almacenes</td></tr>
+      <tr><td class="mon">Magmar <span class="arrow">→</span> Magmortar</td><td class="method">Magmatizador</td><td>Grandes Almacenes</td></tr>
+      <tr><td class="mon">Porygon <span class="arrow">→</span> Porygon2</td><td class="method">Actualizador</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Porygon2 <span class="arrow">→</span> Porygon-Z</td><td class="method">Disco Extraño</td><td>Grandes Almacenes</td></tr>
+      <tr><td class="mon">Feebas <span class="arrow">→</span> Milotic</td><td class="method">Escama Bella</td><td>Corsola salvaje (50%)</td></tr>
+      <tr><td class="mon">Dusclops <span class="arrow">→</span> Dusknoir</td><td class="method">Tela Reaper</td><td>Grandes Almacenes</td></tr>
+      <tr><td class="mon">Clamperl <span class="arrow">→</span> Huntail</td><td class="method">Diente Marino</td><td>Mercado Portualta</td></tr>
+      <tr><td class="mon">Clamperl <span class="arrow">→</span> Gorebyss</td><td class="method">Escama Marina</td><td>Mercado Portualta</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Evolucionan en pareja</h2>
+    <div class="note">Se necesita el otro Pokémon en el equipo, no intercambiado.</div>
+    <table>
+      <tr><th>Pokémon</th><th>Método nuevo</th></tr>
+      <tr><td class="mon">Karrablast <span class="arrow">→</span> Escavalier</td><td class="method">Subir de nivel con un Shelmet en el equipo</td></tr>
+      <tr><td class="mon">Shelmet <span class="arrow">→</span> Accelgor</td><td class="method">Subir de nivel con un Karrablast en el equipo</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Niveles de evolución reducidos</h2>
+    <div class="note">Los más notables: Mienfoo (-14), Bisharp y Rufflet/Vullaby (-15 cada uno).</div>
+    <table>
+      <tr><th>Pokémon</th><th>Antes</th><th>Ahora</th><th>Diferencia</th></tr>
+      <tr><td class="mon">Ponyta → Rapidash</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Slowpoke → Slowbro</td><td>37</td><td>33</td><td class="diff">−4</td></tr>
+      <tr><td class="mon">Grimer → Muk</td><td>38</td><td>35</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Koffing → Weezing</td><td>35</td><td>33</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Rhyhorn → Rhydon</td><td>42</td><td>39</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Omanyte → Omastar</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Kabuto → Kabutops</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Slugma → Magcargo</td><td>38</td><td>33</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Meditite → Medicham</td><td>37</td><td>35</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Wailmer → Wailord</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Swablu → Altaria</td><td>35</td><td>33</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Lileep → Cradily</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Anorith → Armaldo</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Shuppet → Banette</td><td>37</td><td>34</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Duskull → Dusclops</td><td>37</td><td>34</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Snorunt → Glalie</td><td>42</td><td>39</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Glameow → Purugly</td><td>38</td><td>33</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Skorupi → Drapion</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Croagunk → Toxicroak</td><td>37</td><td>35</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Scraggy → Scrafty</td><td>39</td><td>34</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Trubbish → Garbodor</td><td>36</td><td>34</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Gothita → Gothorita</td><td>32</td><td>26</td><td class="diff">−6</td></tr>
+      <tr><td class="mon">Gothorita → Gothitelle</td><td>41</td><td>39</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Solosis → Duosion</td><td>32</td><td>26</td><td class="diff">−6</td></tr>
+      <tr><td class="mon">Duosion → Reuniclus</td><td>41</td><td>39</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Vanillite → Vanillish</td><td>35</td><td>33</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Vanillish → Vanilluxe</td><td>47</td><td>44</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Ducklett → Swanna</td><td>35</td><td>33</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Foongus → Amoonguss</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Frillish → Jellicent</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Joltik → Galvantula</td><td>36</td><td>33</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Ferroseed → Ferrothorn</td><td>40</td><td>37</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Klink → Klang</td><td>38</td><td>33</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Klang → Klinklang</td><td>49</td><td>44</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Tynamo → Eelektrik</td><td>39</td><td>34</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Elgyem → Beheeyem</td><td>42</td><td>39</td><td class="diff">−3</td></tr>
+      <tr><td class="mon">Litwick → Lampent</td><td>41</td><td>34</td><td class="diff">−7</td></tr>
+      <tr><td class="mon">Axew → Fraxure</td><td>42</td><td>32</td><td class="diff">−10</td></tr>
+      <tr><td class="mon">Mienfoo → Mienshao</td><td>50</td><td>36</td><td class="diff">−14</td></tr>
+      <tr><td class="mon">Golett → Golurk</td><td>43</td><td>39</td><td class="diff">−4</td></tr>
+      <tr><td class="mon">Pawniard → Bisharp</td><td>52</td><td>37</td><td class="diff">−15</td></tr>
+      <tr><td class="mon">Rufflet → Braviary</td><td>54</td><td>39</td><td class="diff">−15</td></tr>
+      <tr><td class="mon">Vullaby → Mandibuzz</td><td>54</td><td>39</td><td class="diff">−15</td></tr>
+      <tr><td class="mon">Deino → Zweilous</td><td>50</td><td>39</td><td class="diff">−11</td></tr>
+      <tr><td class="mon">Zweilous → Hydreigon</td><td>64</td><td>59</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Larvesta → Volcarona</td><td>59</td><td>50</td><td class="diff">−9</td></tr>
+      <tr><td class="mon">Litleo → Pyroar</td><td>35</td><td>33</td><td class="diff">−2</td></tr>
+      <tr><td class="mon">Binacle → Barbaracle</td><td>39</td><td>34</td><td class="diff">−5</td></tr>
+      <tr><td class="mon">Skrelp → Dragalge</td><td>48</td><td>35</td><td class="diff">−13</td></tr>
+      <tr><td class="mon">Clauncher → Clawitzer</td><td>37</td><td>33</td><td class="diff">−4</td></tr>
+      <tr><td class="mon">Noibat → Noivern</td><td>48</td><td>44</td><td class="diff">−4</td></tr>
+    </table>
+  </div>
+
+  <a class="back" href="index.html">← volver al seguimiento general</a>
+</div>
+</body>
+</html>

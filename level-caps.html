@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level Caps · Pokémon Rookies</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold: #e0b559; --gold-bright: #f6d98a; --gold-dim: #8a6a2e;
+    --gc-bg-top: #241a10; --gc-bg-bottom: #0c0906;
+    --gc-panel: #1b140c; --gc-panel-border: #40311a;
+    --cream: #f4ead2; --label: #a3906f; --orange: #f0932b;
+    --pixel: 'Press Start 2P', monospace; --body: 'Rubik', system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh;
+    background: radial-gradient(ellipse 900px 500px at 20% -10%, rgba(224,181,89,0.08), transparent 60%), #0a0e15;
+    color: var(--cream); font-family: var(--body); line-height:1.5;
+    padding: 32px 20px 60px;
+  }
+  .wrap{ max-width: 720px; margin:0 auto; }
+  .eyebrow{ font-family: var(--pixel); font-size:9px; color:var(--gold); letter-spacing:2px; text-align:center; margin-bottom:10px; }
+  h1{ font-family: var(--pixel); font-size: clamp(18px,4vw,26px); text-align:center; margin:0 0 8px; text-shadow: 2px 2px 0 var(--gold-dim); color:#fff; }
+  .subtitle{ text-align:center; color:var(--label); font-size:13px; margin-bottom: 34px; }
+  .section{
+    background: linear-gradient(180deg, var(--gc-bg-top), var(--gc-bg-bottom) 70%);
+    border: 2px solid var(--gold-dim);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .section h2{
+    font-size: 13px; text-transform:uppercase; letter-spacing:.5px;
+    color: var(--gold-bright); margin: 0 0 14px;
+  }
+  .row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gc-panel-border);
+  }
+  .row:last-child{ border-bottom:none; }
+  .row .name{ font-weight:600; font-size:14.5px; }
+  .row .level{
+    font-family: var(--pixel); font-size:13px; color: var(--orange);
+    background: var(--gc-panel); border:1px solid var(--gc-panel-border);
+    border-radius:8px; padding:6px 12px;
+  }
+  a.back{ display:block; text-align:center; color:var(--label); font-size:12px; margin-top:20px; text-decoration:none; }
+  a.back:hover{ color: var(--gold-bright); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Pokémon Rookies</div>
+  <h1>LEVEL CAPS OFICIALES</h1>
+  <p class="subtitle">Nivel máximo permitido en cada combate importante</p>
+
+  <div class="section">
+    <h2>🏅 Líderes de Gimnasio</h2>
+    <div class="row"><span class="name">Petra</span><span class="level">Nv. 16</span></div>
+    <div class="row"><span class="name">Marcial</span><span class="level">Nv. 19</span></div>
+    <div class="row"><span class="name">Erico</span><span class="level">Nv. 28</span></div>
+    <div class="row"><span class="name">Candela</span><span class="level">Nv. 38</span></div>
+    <div class="row"><span class="name">Norman</span><span class="level">Nv. 42</span></div>
+    <div class="row"><span class="name">Alana</span><span class="level">Nv. 50</span></div>
+    <div class="row"><span class="name">Vito y Leti</span><span class="level">Nv. 62</span></div>
+    <div class="row"><span class="name">Plubio</span><span class="level">Nv. 67</span></div>
+  </div>
+
+  <div class="section">
+    <h2>⭐ Alto Mando</h2>
+    <div class="row"><span class="name">Sixto</span><span class="level">Nv. 72</span></div>
+    <div class="row"><span class="name">Fátima</span><span class="level">Nv. 73</span></div>
+    <div class="row"><span class="name">Nívea</span><span class="level">Nv. 74</span></div>
+    <div class="row"><span class="name">Dracón</span><span class="level">Nv. 75</span></div>
+  </div>
+
+  <div class="section">
+    <h2>🏆 Campeón</h2>
+    <div class="row"><span class="name">Máximo</span><span class="level">Nv. 79</span></div>
+  </div>
+
+  <a class="back" href="index.html">← volver al seguimiento general</a>
+</div>
+</body>
+</html>
